@@ -10,7 +10,7 @@ using Transflo_DriverCRUDProject.Repos;
 namespace Transflo_DriverCRUDProject.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("/api/[controller]")]
     public class DriverController : ControllerBase
     {
 
@@ -24,7 +24,7 @@ namespace Transflo_DriverCRUDProject.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet("GetDriver/{id}")]
+        [HttpGet("{id}")]
         public GetDriverDto GetDriverById(int id)
         {
             // Get the connection string from the configuration
@@ -61,8 +61,46 @@ namespace Transflo_DriverCRUDProject.Controllers
             return result;
         }
 
+        [HttpGet("All")]
+        public IEnumerable<GetDriverDto> GetAll()
+        {
+            // Get the connection string from the configuration
+            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            var result = new List<GetDriverDto>();
 
-        [HttpGet("GetDriverNameAlphabetized/{id}")]
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                // Define the SQL query to select all drivers
+                string query = "SELECT * FROM Drivers";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    // Map the database columns to the properties of the GetDriverDto object
+                    var driver = new GetDriverDto
+                    {
+                        Id = (int)(reader["Id"]),
+                        FirstName = (string)reader["FirstName"],
+                        LastName = (string)reader["LastName"],
+                        Email = (string)reader["Email"],
+                        PhoneNumber = (string)reader["PhoneNumber"]
+                    };
+
+                    result.Add(driver);
+                }
+
+                reader.Close();
+            }
+
+            // Return the list of driver records
+            return result;
+        }
+
+
+        [HttpGet("Alphapetized/{id}")]
         public string GetDriverNameAlphabetized(int id)
         {
             // Get the driver information by ID
@@ -129,7 +167,7 @@ namespace Transflo_DriverCRUDProject.Controllers
         }
 
 
-        [HttpPost("AddDriver")]
+        [HttpPost]
         public DriverResponse AddDriver(AddDriverDto driver)
         {
             // Get the connection string from the configuration
@@ -241,7 +279,7 @@ namespace Transflo_DriverCRUDProject.Controllers
         }
 
 
-        [HttpPut("UpdateDriver/{id}")]
+        [HttpPut("{id}")]
         public DriverResponse UpdateDriver(int id, UpdateDriverDto driver)
         {
             // Get the connection string from the configuration
@@ -369,7 +407,7 @@ namespace Transflo_DriverCRUDProject.Controllers
         }
 
 
-        [HttpDelete("DeleteDriver/{id}")]
+        [HttpDelete("{id}")]
         public DriverResponse DeleteDriver(int id)
         {
             // Get the connection string from the configuration
