@@ -339,8 +339,8 @@ namespace Transflo_DriverCRUDProject.Controllers
 
                 // Create an update query to update the driver's information in the database
                 string updateQuery = "UPDATE Drivers SET ";
-
-                // Validate the driver information
+                
+                //Ignore null and empty fields
                 if (!string.IsNullOrEmpty(driver.FirstName?.Trim()))
                 {
                     updateQuery += $"FirstName = '{driver.FirstName}',";
