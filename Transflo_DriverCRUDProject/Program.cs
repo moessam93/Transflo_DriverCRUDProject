@@ -4,7 +4,7 @@ using Transflo_DriverCRUDProject.Repos;
 
 namespace Transflo_DriverCRUDProject
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -15,9 +15,6 @@ namespace Transflo_DriverCRUDProject
             {
                 var services = scope.ServiceProvider;
                 var configuration = services.GetRequiredService<IConfiguration>();
-
-                // Get the connection string from the configuration
-                string connectionString = configuration.GetConnectionString("DefaultConnection");
 
                 // Initialize the database
                 using (var driverRepository = new DriverRepository(configuration))

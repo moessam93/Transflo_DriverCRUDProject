@@ -4,64 +4,74 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Numerics;
 
-class Program
+namespace SeedDriversData
 {
-    private static string connectionString;
-
-    static void Main(string[] args)
+    public static class Program
     {
-        // Configuring the application settings using the appsettings.json file
-        IConfiguration configuration = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json")
-            .Build();
+        private static string? connectionString;
 
-        // Retrieving the connection string from the configuration
-        connectionString = configuration.GetConnectionString("DefaultConnection");
-
-        Console.WriteLine("Welcome to the Data Seeding Program!");
-
-        Console.WriteLine("Press 1 and Enter to seed the data...");
-        string userInput = Console.ReadLine();
-
-        if (userInput == "1")
+        static void Main(string[] args)
         {
-            try
+            // Configuring the application settings using the appsettings.json file
+            IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            // Retrieving the connection string from the configuration
+            if (configuration.GetConnectionString("DefaultConnection") != null)
             {
-                // Calling the SeedDrivers method to seed data into the database
-                SeedDrivers();
-
-                Console.WriteLine("Data seeding operation completed successfully!");
+                connectionString = configuration.GetConnectionString("DefaultConnection");
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine("Data seeding operation failed: " + ex.Message);
+                Console.WriteLine("Invalid Connection String");
             }
+
+
+            Console.WriteLine("Welcome to the Data Seeding Program!");
+
+            Console.WriteLine("Press 1 and Enter to seed the data...");
+            string? userInput = Console.ReadLine();
+
+            if (userInput == "1")
+            {
+                try
+                {
+                    // Calling the SeedDrivers method to seed data into the database
+                    SeedDrivers();
+
+                    Console.WriteLine("Data seeding operation completed successfully!");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Data seeding operation failed: " + ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Data seeding operation canceled.");
+            }
+
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
         }
-        else
+
+        public static void SeedDrivers()
         {
-            Console.WriteLine("Data seeding operation canceled.");
-        }
+            // Establishing a connection to the database using the connection string
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
 
-        Console.WriteLine("Press any key to exit...");
-        Console.ReadKey();
-    }
+                // Creating a SQL command object to execute the data seeding query
+                SqlCommand command = new SqlCommand();
 
-    public static void SeedDrivers()
-    {
-        // Establishing a connection to the database using the connection string
-        using (var connection = new SqlConnection(connectionString))
-        {
-            connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
 
-            // Creating a SQL command object to execute the data seeding query
-            SqlCommand command = new SqlCommand();
-
-            command.Connection = connection;
-            command.CommandType = CommandType.Text;
-
-            // Setting the data seeding query to insert random driver data into the Drivers table
-            command.CommandText = @"
+                // Setting the data seeding query to insert random driver data into the Drivers table
+                command.CommandText = @"
                 WITH Numbers AS (
                     SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS RowNumber
                     FROM sys.all_objects
@@ -109,8 +119,14 @@ class Program
                 FROM Numbers
                 WHERE RowNumber <= 100;";
 
-            // Executing the data seeding query and returning the number of rows affected
-            int rowsAffected = command.ExecuteNonQuery();
+                // Executing the data seeding query and returning the number of rows affected
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected < 100)
+                {
+                    Console.WriteLine($"Only {rowsAffected} has been added");
+                }
+            }
         }
     }
 }

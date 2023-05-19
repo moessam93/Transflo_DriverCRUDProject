@@ -15,12 +15,10 @@ namespace Transflo_DriverCRUDProject.Controllers
     {
 
 
-        private readonly ILogger<DriverController> _logger;
         private readonly IConfiguration _configuration;
 
-        public DriverController(ILogger<DriverController> logger,  IConfiguration configuration)
+        public DriverController(IConfiguration configuration)
         {
-            _logger = logger;
             _configuration = configuration;
         }
 
@@ -115,14 +113,8 @@ namespace Transflo_DriverCRUDProject.Controllers
                 // Iterate through each character in the driver's first name
                 for (int i = 0; i < driverFirstName.Length; i++)
                 {
-                    // Check if the character exists in the original first name (lowercase)
-                    if (driver.FirstName.IndexOf(driverFirstName[i]) != -1)
-                    {
-                        continue;
-                    }
-                    // If the character doesn't exist in the original first name (lowercase),
                     // check if it exists in the original first name (uppercase)
-                    else if (driver.FirstName.IndexOf(char.ToUpper(driverFirstName[i])) != -1)
+                    if (driver.FirstName.IndexOf(char.ToUpper(driverFirstName[i])) != -1)
                     {
                         // Convert the character to uppercase
                         driverFirstName[i] = char.ToUpper(driverFirstName[i]);
@@ -139,14 +131,9 @@ namespace Transflo_DriverCRUDProject.Controllers
                 // Iterate through each character in the driver's last name
                 for (int i = 0; i < driverLastName.Length; i++)
                 {
-                    // Check if the character exists in the original last name (lowercase)
-                    if (driver.LastName.IndexOf(driverLastName[i]) != -1)
-                    {
-                        continue;
-                    }
-                    // If the character doesn't exist in the original last name (lowercase),
+
                     // check if it exists in the original last name (uppercase)
-                    else if (driver.LastName.IndexOf(char.ToUpper(driverLastName[i])) != -1)
+                    if (driver.LastName.IndexOf(char.ToUpper(driverLastName[i])) != -1)
                     {
                         // Convert the character to uppercase
                         driverLastName[i] = char.ToUpper(driverLastName[i]);
@@ -162,7 +149,7 @@ namespace Transflo_DriverCRUDProject.Controllers
             else
             {
                 // If the driver is not found, return null
-                return null;
+                return $"No Driver with Id {id} exists";
             }
         }
 
@@ -188,33 +175,31 @@ namespace Transflo_DriverCRUDProject.Controllers
                 // Execute the query to check if a driver with the same phone number exists
                 SqlDataReader readerPhoneNumber = findByPhoneNumberCommand.ExecuteReader();
 
-                if (readerPhoneNumber.Read())
+                if (readerPhoneNumber.Read() && (int)(readerPhoneNumber["Id"]) > 0)
                 {
                     // If a driver with the same phone number exists, return a response indicating the duplicate
-                    if ((int)(readerPhoneNumber["Id"]) != null && (int)(readerPhoneNumber["Id"]) > 0)
-                        return new DriverResponse()
-                        {
-                            Id = null,
-                            Message = $"Driver with Phone Number {driver.PhoneNumber} already exists"
-                        };
+                    return new DriverResponse()
+                    {
+                        Id = null,
+                        Message = $"Driver with Phone Number {driver.PhoneNumber} already exists"
+                    };
                 }
 
                 // Execute the query to check if a driver with the same email exists
                 SqlDataReader readerEmail = findByEmailCommand.ExecuteReader();
 
-                if (readerEmail.Read())
+                if (readerEmail.Read() && (int)(readerEmail["Id"]) > 0)
                 {
                     // If a driver with the same email exists, return a response indicating the duplicate
-                    if ((int)(readerEmail["Id"]) != null && (int)(readerEmail["Id"]) > 0)
-                        return new DriverResponse()
-                        {
-                            Id = null,
-                            Message = $"Driver with Email {driver.Email} already exists"
-                        };
+                    return new DriverResponse()
+                    {
+                        Id = null,
+                        Message = $"Driver with Email {driver.Email} already exists"
+                    };
                 }
 
                 // Validate the driver information
-                if (string.IsNullOrEmpty(driver.FirstName.Trim()))
+                if (string.IsNullOrEmpty(driver.FirstName?.Trim()))
                 {
                     // Return a response indicating that the driver's first name is null or empty
                     return new DriverResponse()
@@ -223,7 +208,7 @@ namespace Transflo_DriverCRUDProject.Controllers
                         Message = $"Driver's First Name can't be null or empty"
                     };
                 }
-                if (string.IsNullOrEmpty(driver.LastName.Trim()))
+                if (string.IsNullOrEmpty(driver.LastName?.Trim()))
                 {
                     // Return a response indicating that the driver's last name is null or empty
                     return new DriverResponse()
@@ -232,7 +217,7 @@ namespace Transflo_DriverCRUDProject.Controllers
                         Message = $"Driver's Last Name can't be null or empty"
                     };
                 }
-                if (string.IsNullOrEmpty(driver.Email.Trim()))
+                if (string.IsNullOrEmpty(driver.Email?.Trim()))
                 {
                     // Return a response indicating that the driver's email is null or empty
                     return new DriverResponse()
@@ -241,7 +226,7 @@ namespace Transflo_DriverCRUDProject.Controllers
                         Message = $"Driver's Email can't be null or empty"
                     };
                 }
-                if (string.IsNullOrEmpty(driver.PhoneNumber.Trim()))
+                if (string.IsNullOrEmpty(driver.PhoneNumber?.Trim()))
                 {
                     // Return a response indicating that the driver's phone number is null or empty
                     return new DriverResponse()
@@ -313,33 +298,33 @@ namespace Transflo_DriverCRUDProject.Controllers
 
                 // Execute the query to check if a driver with the same phone number exists
                 SqlDataReader readerPhoneNumber = findByPhoneNumberCommand.ExecuteReader();
-                if (readerPhoneNumber.Read())
+                if (readerPhoneNumber.Read() && (int)(readerPhoneNumber["Id"]) != id)
                 {
                     // If a driver with the same phone number is found (excluding the current driver being updated), return a response indicating the duplicate
-                    if ((int)(readerPhoneNumber["Id"]) != null && (int)(readerPhoneNumber["Id"]) != id)
-                        return new DriverResponse()
-                        {
-                            Id = null,
-                            Message = $"Driver with Phone Number {driver.PhoneNumber} already exists"
-                        };
+                    return new DriverResponse()
+                    {
+                        Id = null,
+                        Message = $"Driver with Phone Number {driver.PhoneNumber} already exists"
+                    };
                 }
 
                 // Execute the query to check if a driver with the same email exists
                 SqlDataReader readerEmail = findByEmailCommand.ExecuteReader();
-                if (readerEmail.Read())
+                if (readerEmail.Read() && (int)(readerEmail["Id"]) != id)
                 {
                     // If a driver with the same email is found (excluding the current driver being updated), return a response indicating the duplicate
-                    if ((int)(readerEmail["Id"]) != null && (int)(readerEmail["Id"]) != id)
-                        return new DriverResponse()
-                        {
-                            Id = null,
-                            Message = $"Driver with Email {driver.Email} already exists"
-                        };
+
+                    return new DriverResponse()
+                    {
+                        Id = null,
+                        Message = $"Driver with Email {driver.Email} already exists"
+                    };
+
                 }
 
                 // Create an update query to update the driver's information in the database
                 string updateQuery = "UPDATE Drivers SET ";
-                
+
                 //Ignore null and empty fields
                 if (!string.IsNullOrEmpty(driver.FirstName?.Trim()))
                 {
@@ -369,7 +354,7 @@ namespace Transflo_DriverCRUDProject.Controllers
                 updateQuery += $" WHERE Id = {id}";
 
                 SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
-                
+
                 // Execute the update command and get the number of rows affected
                 int rowsAffected = updateCommand.ExecuteNonQuery();
 
