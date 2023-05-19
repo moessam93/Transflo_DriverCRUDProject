@@ -67,25 +67,34 @@ INSERT INTO Drivers (FirstName, LastName, Email, PhoneNumber)
 SELECT
     CHAR(65 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
-    CHAR(65 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
-    CHAR(65 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
-    CHAR(65 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
-    CHAR(65 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) AS FirstName,
     CHAR(65 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
-    CHAR(65 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
-    CHAR(65 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
-    CHAR(65 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
-    CHAR(65 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) AS LastName,
-    CONCAT('email', COALESCE((SELECT LastId FROM LastId), 0) + RowNumber, '@example.com') AS Email,
+    CONCAT(CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) , '@email.com') AS Email,
     CAST(ABS(CHECKSUM(NEWID())) AS INT) AS PhoneNumber
 FROM Numbers
 WHERE RowNumber <= 100;";
