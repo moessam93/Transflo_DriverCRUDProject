@@ -58,10 +58,6 @@ class Program
             command.CommandText = @"WITH Numbers AS (
     SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS RowNumber
     FROM sys.all_objects
-),
-LastId AS (
-    SELECT MAX(Id) AS LastId
-    FROM Drivers
 )
 INSERT INTO Drivers (FirstName, LastName, Email, PhoneNumber)
 SELECT
@@ -94,7 +90,7 @@ SELECT
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
     CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) +
-    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) , '@email.com') AS Email,
+    CHAR(97 + (ABS(CHECKSUM(NEWID())) % 26)) , '@transflo.com') AS Email,
     CAST(ABS(CHECKSUM(NEWID())) AS INT) AS PhoneNumber
 FROM Numbers
 WHERE RowNumber <= 100;";
