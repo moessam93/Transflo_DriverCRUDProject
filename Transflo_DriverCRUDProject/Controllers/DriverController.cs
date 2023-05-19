@@ -337,51 +337,39 @@ namespace Transflo_DriverCRUDProject.Controllers
                         };
                 }
 
-                // Validate the driver information
-                if (string.IsNullOrEmpty(driver.FirstName.Trim()))
-                {
-                    // Return a response indicating that the driver's first name is null or empty
-                    return new DriverResponse()
-                    {
-                        Id = null,
-                        Message = $"Driver's First Name can't be null or empty"
-                    };
-                }
-                if (string.IsNullOrEmpty(driver.LastName.Trim()))
-                {
-                    // Return a response indicating that the driver's last name is null or empty
-                    return new DriverResponse()
-                    {
-                        Id = null,
-                        Message = $"Driver's Last Name can't be null or empty"
-                    };
-                }
-                if (string.IsNullOrEmpty(driver.Email.Trim()))
-                {
-                    // Return a response indicating that the driver's email is null or empty
-                    return new DriverResponse()
-                    {
-                        Id = null,
-                        Message = $"Driver's Email can't be null or empty"
-                    };
-                }
-                if (string.IsNullOrEmpty(driver.PhoneNumber.Trim()))
-                {
-                    // Return a response indicating that the driver's phone number is null or empty
-                    return new DriverResponse()
-                    {
-                        Id = null,
-                        Message = $"Driver's Phone Number can't be null or empty"
-                    };
-                }
-
                 // Create an update query to update the driver's information in the database
-                string updateQuery = $"UPDATE Drivers set FirstName  = '{driver.FirstName}'," +
-                    $"LastName = '{driver.LastName}'," +
-                    $"Email = '{driver.Email}'," +
-                    $"PhoneNumber = '{driver.PhoneNumber}' where Id = {id}";
-                SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
+                string updateQuery = "UPDATE Drivers SET ";
 
+                // Validate the driver information
+                if (!string.IsNullOrEmpty(driver.FirstName?.Trim()))
+                {
+                    updateQuery += $"FirstName = '{driver.FirstName}',";
+
+                }
+                if (!string.IsNullOrEmpty(driver.LastName?.Trim()))
+                {
+                    updateQuery += $"LastName = '{driver.LastName}',";
+
+                }
+                if (!string.IsNullOrEmpty(driver.Email?.Trim()))
+                {
+                    updateQuery += $"Email = '{driver.Email}',";
+
+                }
+                if (!string.IsNullOrEmpty(driver.PhoneNumber?.Trim()))
+                {
+                    updateQuery += $"PhoneNumber = '{driver.PhoneNumber}',";
+
+                }
+
+                // Remove the trailing comma
+                updateQuery = updateQuery.TrimEnd(',');
+
+                // Add the condition for the driver's ID
+                updateQuery += $" WHERE Id = {id}";
+
+                SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
+                
                 // Execute the update command and get the number of rows affected
                 int rowsAffected = updateCommand.ExecuteNonQuery();
 
