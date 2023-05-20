@@ -108,13 +108,14 @@ namespace Transflo_DriverCRUDProject.Controllers
                 // Convert the driver's first name to lowercase and store it in a character array
                 char[] driverFirstName = driver.FirstName.ToLower().ToCharArray();
                 Array.Sort(driverFirstName);
-
+                bool firstLetterCapitalizedFirstName = false;
                 // Iterate through each character in the driver's first name
                 for (int i = 0; i < driverFirstName.Length; i++)
                 {
                     // check if it exists in the original first name (uppercase)
-                    if (driver.FirstName.IndexOf(char.ToUpper(driverFirstName[i])) != -1)
+                    if (driver.FirstName.IndexOf(char.ToUpper(driverFirstName[i])) != -1 && !firstLetterCapitalizedFirstName)
                     {
+                        firstLetterCapitalizedFirstName = true;
                         // Convert the character to uppercase
                         driverFirstName[i] = char.ToUpper(driverFirstName[i]);
                     }
@@ -126,14 +127,15 @@ namespace Transflo_DriverCRUDProject.Controllers
                 // Convert the driver's last name to lowercase and store it in a character array
                 char[] driverLastName = driver.LastName.ToLower().ToCharArray();
                 Array.Sort(driverLastName);
-
+                bool firstLetterCapitalizedLastName = false;
                 // Iterate through each character in the driver's last name
                 for (int i = 0; i < driverLastName.Length; i++)
                 {
 
                     // check if it exists in the original last name (uppercase)
-                    if (driver.LastName.IndexOf(char.ToUpper(driverLastName[i])) != -1)
+                    if (driver.LastName.IndexOf(char.ToUpper(driverLastName[i])) != -1 && !firstLetterCapitalizedLastName)
                     {
+                        firstLetterCapitalizedLastName = true;
                         // Convert the character to uppercase
                         driverLastName[i] = char.ToUpper(driverLastName[i]);
                     }
